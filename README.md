@@ -40,7 +40,7 @@ Note that we are using only subset (≈32k rows) of the `Adult` data in the exam
 using AssociationRules
 
 dataset("adult")            # example dataset included in package
-sanitize_input!(adult)
+sanitize_input!(adult)      # remove excluded character patterns (e.g., " => ")
 
 # minimum support of 0.1, minimum confidence of 0.8
 rules = apiori(adult, 0.1, 0.8)
