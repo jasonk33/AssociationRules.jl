@@ -1,8 +1,5 @@
 # wrapper for arules.R
 
-using RCall
-using DataFrames
-
 
 function init_arules()
     R"""

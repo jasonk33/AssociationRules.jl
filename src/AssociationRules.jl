@@ -1,5 +1,8 @@
 module AssociationRules
 
+using RCall
+using DataFrames
+
 export apriori, dataset, sanitize_input!
 
 include("arules.jl")
