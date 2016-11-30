@@ -2,8 +2,8 @@ module AssociationRules
 
 export apriori, dataset, sanitize_input!
 
-include("./src/arules.jl")
-include("./src/utils.jl")
+include("arules.jl")
+include("utils.jl")
 
 init_arules()
 
