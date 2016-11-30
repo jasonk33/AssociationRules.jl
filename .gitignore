@@ -1,0 +1,8 @@
+\#*
+*~
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+*.R
+*.py
+.Rhistory
