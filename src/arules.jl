@@ -46,7 +46,7 @@ function init_arules()
     return nothing
 end
 
-init_arules()
+# init_arules()
 
 """
     sanitize_input!(dat::DataFrame)
@@ -77,6 +77,12 @@ function split_rule!(dat)
     end
 end
 
+"""
+    apriori(dat::DataFrame, supp::Float64, conf::Float64)
+The apriori function implements the a-priori algorithm for
+association rule mining. It returns a DataFrame with rules
+with minimum support greater than or equal to `supp` and
+confidence greater than or equal to `conf`.
 
 function apriori(dat::DataFrame, supp = 0.2, conf = 0.01)
     @rput dat
