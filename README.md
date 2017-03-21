@@ -21,7 +21,7 @@ Several examples below illustrate the use and features of the `apiori()` functio
 
 ### Ex. 1 _Apriori_ with Simulated Data:
 Here we are generating association rules using the `apriori()` function.
-```{Julia}
+```Julia
 using AssociationRules
 using StatsBase                        # for sample() function
 
@@ -36,10 +36,10 @@ rules = apriori(transactions_df, 0.2, 0.8)
 
 ### Ex. 2 _Apriori_ with `Adult` [Data](http://mlr.cs.umass.edu/ml/datasets/Adult)
 Note that we are using only subset (≈32k rows) of the `Adult` data in the example below.
-```{Julia}
+```Julia
 using AssociationRules
 
-dataset("adult")            # example dataset included in package
+adult = dataset("adult")            # example dataset included in package
 sanitize_input!(adult)      # remove excluded character patterns (e.g., " => ")
 
 # minimum support of 0.1, minimum confidence of 0.8
