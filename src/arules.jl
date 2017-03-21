@@ -80,23 +80,23 @@ The apriori function implements the a-priori algorithm for
 association rule mining. It returns a DataFrame with rules
 with minimum support greater than or equal to `supp` and
 confidence greater than or equal to `conf`.
-
+"""
 function apriori(dat::DataFrame, supp = 0.2, conf = 0.01)
     @rput dat
 
-    rcode = "
-    dat <- all_factors(dat)
-    transacts <- as(dat, \"transactions\")
+    rcode = """
+        dat <- all_factors(dat)
+        transacts <- as(dat, \"transactions\")
 
-    rules1 <- apriori(transacts,
-                      parameter = list(supp = $supp,
-                                       conf = $conf,
-                                       target = \"rules\"),
-                      control = list(verbose = FALSE))
+        rules1 <- apriori(transacts,
+                          parameter = list(supp = $supp,
+                                           conf = $conf,
+                                           target = \"rules\"),
+                          control = list(verbose = FALSE))
 
-    rules1 <- if (length(rules1) == 0) data.frame() else rules1
-    rules1 <- character_columns(as(rules1, \"data.frame\"))
-    "
+        rules1 <- if (length(rules1) == 0) data.frame() else rules1
+        rules1 <- character_columns(as(rules1, \"data.frame\"))
+    """
     reval(rcode);
     rules_df = @rget rules1;             # get dataframe from R
 
