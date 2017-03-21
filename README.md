@@ -12,7 +12,7 @@ This package implements algorithms for association rule mining by wrapping the _
 
 
 ## Initial Setup
-```{Julia}
+```Julia
 Pkg.clone("https://github.com/bcbi/AssociationRules.jl.git")
 ```
 
@@ -43,7 +43,7 @@ adult = dataset("adult")            # example dataset included in package
 sanitize_input!(adult)      # remove excluded character patterns (e.g., " => ")
 
 # minimum support of 0.1, minimum confidence of 0.8
-rules = apiori(adult, 0.1, 0.8)
+rules = apriori(adult, 0.1, 0.8)
 
 ```
 
