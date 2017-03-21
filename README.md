@@ -3,7 +3,7 @@
 [![codecov](https://codecov.io/gh/bcbi/AssociationRules.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/bcbi/AssociationRules.jl)
 
 ## Dependencies
-This package requires a working installation of [R]("http://r-project.org").
+This package requires Julia 0.5 (at minimum) and a working installation of [R]("http://r-project.org").
 
 
 ## Description
