@@ -17,3 +17,42 @@ function dataset(dataset_name::AbstractString)
         return readtable(filename)
     end
 end
+
+
+function assemble_string_mat(n::Int, p::Int) 
+    res = Array{String, 2}(n, p)
+    empty_row = repeat([""], inner = n, outer = 1)
+    for j = 1:p 
+        res[:, j] = empty_row
+    end 
+    res 
+end 
+
+
+
+
+function split_transactions(v::Array{String,1}, sep = ",")
+    n = length(v)
+    num_cols = 0 
+    for i = 1:n
+        transact = convert(Array{String,1}, split(v[i], sep))
+        num_cols = (num_cols > length(transact)) ? num_cols : length(transact)
+    end
+
+    transact_mat = assemble_string_mat(n, num_cols)
+
+    for i = 1:n 
+        transact = convert(Array{String,1}, split(v[i], sep))
+        last_idx = length(transact)
+        sort!(transact)
+        transact = map(strip, transact)
+        transact_mat[i, 1:last_idx] = transact
+    end
+    return DataFrame(transact_mat)
+end
+
+
+
+W = ["this, is, a, transaction", "and this, is, also"]
+
+split_transactions(W)
