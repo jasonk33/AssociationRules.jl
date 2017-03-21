@@ -29,8 +29,6 @@ function assemble_string_mat(n::Int, p::Int)
 end 
 
 
-
-
 function split_transactions(v::Array{String,1}, sep = ",")
     n = length(v)
     num_cols = 0 
