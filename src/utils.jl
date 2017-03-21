@@ -19,19 +19,19 @@ function dataset(dataset_name::AbstractString)
 end
 
 
-function assemble_string_mat(n::Int, p::Int) 
+function assemble_string_mat(n::Int, p::Int)
     res = Array{String, 2}(n, p)
     empty_row = repeat([""], inner = n, outer = 1)
-    for j = 1:p 
+    for j = 1:p
         res[:, j] = empty_row
-    end 
-    res 
-end 
+    end
+    res
+end
 
 
-function split_transactions(v::Array{String,1}, sep = ",")
+function transactions(v::Array{String,1}, sep = ",")
     n = length(v)
-    num_cols = 0 
+    num_cols = 0
     for i = 1:n
         transact = convert(Array{String,1}, split(v[i], sep))
         num_cols = (num_cols > length(transact)) ? num_cols : length(transact)
@@ -39,11 +39,31 @@ function split_transactions(v::Array{String,1}, sep = ",")
 
     transact_mat = assemble_string_mat(n, num_cols)
 
-    for i = 1:n 
+    for i = 1:n
         transact = convert(Array{String,1}, split(v[i], sep))
         last_idx = length(transact)
-        sort!(transact)
         transact = map(strip, transact)
+        sort!(transact)
+
+        transact_mat[i, 1:last_idx] = transact
+    end
+    return DataFrame(transact_mat)
+end
+
+
+function transactions(v::Array{Array{String,1},1})
+    n = length(v)
+    num_cols = 0
+    for i = 1:n
+        num_cols = (num_cols > length(v[i])) ? num_cols : length(v[i])
+    end
+
+    transact_mat = assemble_string_mat(n, num_cols)
+
+    for i = 1:n
+        last_idx = length(v[i])
+        transact = map(strip, v[i])
+        sort!(transact)
         transact_mat[i, 1:last_idx] = transact
     end
     return DataFrame(transact_mat)
@@ -51,6 +71,7 @@ end
 
 
 
+
 W = ["this, is, a, transaction", "and this, is, also"]
 
-split_transactions(W)
+transactions(W)
