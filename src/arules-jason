@@ -1,0 +1,22 @@
+function apriori2(dat::DataFrame, supp = 0.2, conf = 0.01, minlength = 1, maxlength = 10, minlift = 1.2)
+    @rput supp
+    @rput conf
+    @rput minlength
+    @rput maxlength
+    @rput minlift
+    R"library('arules')"
+    path = homedir()
+    writetable("$path/output.csv",dat)
+    @rput path
+    R"dat2 = read.csv(paste(path, '/output.csv', sep = ''))"
+    R"dat2 <- as(as(dat2, 'matrix'),'itemMatrix')"
+    R"rules1 <- apriori(dat2, parameter = list(supp = supp, conf = conf, minlen = minlength, maxlen = maxlength), control = list(verbose = FALSE))"
+    R"rules1 <- if (length(rules1) == 0) data.frame() else rules1"
+    R"rules1 <- character_columns(as(rules1, \"data.frame\"))"
+    R"rules_sub <- subset(rules1, subset = lift > minlift)"
+    rules_df = @rget rules_sub;             # get dataframe from R
+    R"rm(dat2, rules1, rules_sub, supp, conf, minlength, maxlength, minlift)"           # clean up R environment
+    split_rule!(rules_df);
+    rules_df = rules_df[:, [:lhs, :rhs, :support, :confidence, :lift]]
+    rules_df
+end
