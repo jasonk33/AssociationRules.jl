@@ -81,30 +81,31 @@ association rule mining. It returns a DataFrame with rules
 with minimum support greater than or equal to `supp` and
 confidence greater than or equal to `conf`.
 """
-function apriori(dat::DataFrame, supp = 0.2, conf = 0.01)
+function apriori(dat::DataFrame, supp = 0.2, conf = 0.01, minlen = 1, maxlen = 10, minlift = 1.2)
+    @rput supp
+    @rput conf
+    @rput minlen
+    @rput maxlen
+    @rput minlift
     @rput dat
-
-    rcode = """
-        dat <- all_factors(dat)
-        transacts <- as(dat, \"transactions\")
-
-        rules1 <- apriori(transacts,
-                          parameter = list(supp = $supp,
-                                           conf = $conf,
-                                           target = \"rules\"),
-                          control = list(verbose = FALSE))
-
-        rules1 <- if (length(rules1) == 0) data.frame() else rules1
-        rules1 <- character_columns(as(rules1, \"data.frame\"))
-    """
-    reval(rcode);
-    rules_df = @rget rules1;             # get dataframe from R
-
-    R"""
-    rm(dat, transacts, rules1)           # clean up R environment
-    """
+    R"library('arules')"
+    R"dat2 <- as(as(dat, 'matrix'),'itemMatrix')"
+    R"rules1 <- apriori(dat2, parameter = list(supp = supp, conf = conf, minlen = minlen, maxlen = maxlen), control = list(verbose = FALSE))"
+    R"rules1 <- if (length(rules1) == 0) data.frame() else rules1"
+    R"rules1 <- character_columns(as(rules1, \"data.frame\"))"
+    R"rules_sub <- subset(rules1, subset = lift > minlift)"
+    rules_df = @rget rules_sub;             # get dataframe from R
+    R"rm(dat, dat2, rules1, rules_sub, supp, conf, minlen, maxlen, minlift)"           # clean up R environment
     split_rule!(rules_df);
     rules_df = rules_df[:, [:lhs, :rhs, :support, :confidence, :lift]]
+    for i in 1:length(rules_df[1])
+        lhs = rules_df[i,1][2:end-1]
+        rhs = rules_df[i,2][2:end-1]
+        rules_df[i,1] = lhs
+        rules_df[i,2] = rhs
+    end
+    rules_df[:chi_squared] = length(dat[1]).*rules_df[:,:support].*(rules_df[:,:lift]-1).^2.*rules_df[:,:support].*rules_df[:,:confidence]./(rules_df[:,:confidence]-rules_df[:,:support])./(rules_df[:,:lift]-rules_df[:,:confidence])
+    sort!(rules_df, cols = :chi_squared, rev=true)
     rules_df
 end
 
